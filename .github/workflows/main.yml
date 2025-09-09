@@ -62,7 +62,7 @@ jobs:
           # This name is what the download step will use to find the artifact
           name: tradestore-consumer-jar
           # This path must correctly point to the file that was just built
-          path: target/tradestore-consumer.jar
+          path: target/TradeStore-Consumer-0.0.1-SNAPSHOT.jar
           # Optional: Make sure the file exists, or fail with an error
           if-no-files-found: 'error'
           
