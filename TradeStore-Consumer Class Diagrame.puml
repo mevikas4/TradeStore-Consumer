@@ -1,0 +1,97 @@
+@startuml
+
+' Models
+class Trade {
+    Long id
+    Long tradeId
+    int version
+    String counterPartyId
+    String bookId
+    LocalDate maturityDate
+    LocalDate createdDate
+    boolean expired
+}
+
+class Order {
+    Long id
+    Long tradeId
+    int version
+    String counterPartyId
+    String bookId
+    LocalDate maturityDate
+    LocalDate createdDate
+    boolean expired
+}
+
+class OrderSequence {
+    String id
+    long seq
+    +getId()
+    +setId(String)
+    +getSeq()
+    +setSeq(long)
+}
+
+' Controllers
+class TradeController {
+    -TradeService tradeService
+    +getTradeDetails(Long): Trade
+    +getAllTrades(): List<Trade>
+    +createOrUpdateTrade(Trade): ResponseEntity<Trade>
+}
+
+class OrderController {
+    -OrderService orderService
+    +getTradeDetails(Long): Order
+    +getAllTrades(): List<Order>
+    +createOrUpdateTrade(Order): ResponseEntity<Order>
+}
+
+' Services
+interface TradeService {
+    +saveTrade(Trade): Trade
+    +findTradeById(Long): Trade
+    +findAllTrades(): List<Trade>
+    +updateExpiredTrades(): void
+}
+
+interface OrderService {
+    +saveTrade(Order): Order
+    +findTradeById(Long): Order
+    +findAllTrades(): List<Order>
+}
+
+' Repositories
+interface TradeRepository
+interface OrderRepository
+
+TradeRepository ..|> JpaRepository
+TradeRepository : +findAll(): List<Trade>
+TradeRepository : +findByTradeId(Long): List<Trade>
+TradeRepository o-- Trade
+
+OrderRepository ..|> MongoRepository
+OrderRepository : +findAll(): List<Order>
+OrderRepository : +findByTradeId(Long): List<Order>
+OrderRepository o-- Order
+
+' Kafka Listeners
+class MyKafkaTradeListener {
+    -TradeService tradeService
+    +listen(Trade): void
+}
+
+class MyKafkaOrderListener {
+    -OrderService orderService
+    +listen(Order): void
+}
+
+' Relationships
+TradeController --> TradeService
+OrderController --> OrderService
+MyKafkaTradeListener --> TradeService
+MyKafkaOrderListener --> OrderService
+TradeService ..> Trade
+OrderService ..> Order
+
+@enduml

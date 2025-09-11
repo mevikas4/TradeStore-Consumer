@@ -1,0 +1,50 @@
+@startuml
+actor Client
+
+== Trade Flow ==
+
+Client -> TradeController : createOrUpdateTrade(trade)
+TradeController -> TradeService : saveTrade(trade)
+TradeService -> TradeRepository : save(trade)
+TradeRepository --> TradeService : Trade
+TradeService --> TradeController : Trade
+TradeController --> Client : HTTP Response (Trade or Error)
+
+Client -> TradeController : getTradeDetails(tradeId)
+TradeController -> TradeService : findTradeById(tradeId)
+TradeService -> TradeRepository : findByTradeId(tradeId)
+TradeRepository --> TradeService : Trade
+TradeService --> TradeController : Trade
+TradeController --> Client : Trade
+
+Client -> TradeController : getAllTrades()
+TradeController -> TradeService : findAllTrades()
+TradeService -> TradeRepository : findAll()
+TradeRepository --> TradeService : List<Trade>
+TradeService --> TradeController : List<Trade>
+TradeController --> Client : List<Trade>
+
+== Order Flow ==
+
+Client -> OrderController : createOrUpdateOrder(order)
+OrderController -> OrderService : saveOrder(order)
+OrderService -> OrderRepository : save(order)
+OrderRepository --> OrderService : Order
+OrderService --> OrderController : Order
+OrderController --> Client : HTTP Response (Order or Error)
+
+Client -> OrderController : getOrderDetails(orderId)
+OrderController -> OrderService : findOrderById(orderId)
+OrderService -> OrderRepository : findByOrderId(orderId)
+OrderRepository --> OrderService : Order
+OrderService --> OrderController : Order
+OrderController --> Client : Order
+
+Client -> OrderController : getAllOrders()
+OrderController -> OrderService : findAllOrders()
+OrderService -> OrderRepository : findAll()
+OrderRepository --> OrderService : List<Order>
+OrderService --> OrderController : List<Order>
+OrderController --> Client : List<Order>
+
+@enduml
